@@ -2,6 +2,7 @@
 # - git-clone
 # - flake8
 # - cleanup
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -15,6 +16,9 @@ spec:
     - name: repo-url
       type: string
     - name: branch
+      type: string
+      default: main
+    - name: build-image
       type: string
 
   tasks:
@@ -74,3 +78,17 @@ spec:
           value: "-v --with-spec --spec-color"
       runAfter:
         - clone
+
+    - name: build
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      params:
+        - name: IMAGE
+          value: "$(params.build-image)"
+      runAfter:
+        - lint
+        - tests
