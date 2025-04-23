@@ -12,6 +12,7 @@ api = Blueprint("api", __name__)
 ######################################################################
 # INDEX
 ######################################################################
+
 @api.route("/", methods=["GET"])
 def index():
     """Returns a simple greeting message for the root URL"""
@@ -21,6 +22,7 @@ def index():
 ######################################################################
 # HEALTH CHECK
 ######################################################################
+
 @api.route("/health", methods=["GET"])
 def health():
     """Health check endpoint"""
@@ -30,6 +32,7 @@ def health():
 ######################################################################
 # INTERNAL SERVER ERROR (FOR TESTING)
 ######################################################################
+
 @api.route("/boom", methods=["GET"])
 def boom():
     """Endpoint to deliberately trigger a 500 Internal Server Error"""
@@ -39,6 +42,7 @@ def boom():
 ######################################################################
 # CREATE AN ACCOUNT
 ######################################################################
+
 @api.route("/accounts", methods=["POST"])
 def create_account():
     """Creates a new Account"""

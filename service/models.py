@@ -128,11 +128,3 @@ class Account(db.Model, PersistentBase):
         """Returns all Accounts with the given name"""
         logger.info("Searching for name: %s", name)
         return cls.query.filter(cls.name == name)
-
-
-    def test_deserialize_key_error(self):
-        """It should raise KeyError if fields are missing"""
-        account = Account()
-        bad_data = {"email": "test@example.com"}  # missing name
-        with self.assertRaises(KeyError):
-            account.deserialize(bad_data)

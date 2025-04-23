@@ -16,6 +16,7 @@ from service.common.error_handlers import init_error_handlers
 # Global Talisman instance so it can be imported in tests
 talisman = Talisman()
 
+
 def create_app():
     """Application factory for initializing Flask app"""
     app = Flask(__name__)
@@ -55,6 +56,7 @@ def create_app():
     app.logger.info("Service initialized!")
 
     return app
+
 
 # Make importable for testing
 __all__ = ["create_app", "talisman"]
