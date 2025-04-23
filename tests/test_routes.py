@@ -43,7 +43,6 @@ class TestAccountService(TestCase):
         """Runs before each test"""
         db.session.query(Account).delete()  # clean up the last tests
         db.session.commit()
-
         self.client = app.test_client()
 
     def tearDown(self):
@@ -53,7 +52,6 @@ class TestAccountService(TestCase):
     ######################################################################
     #  H E L P E R   M E T H O D S
     ######################################################################
-
     def _create_accounts(self, count):
         """Factory method to create accounts in bulk"""
         accounts = []
@@ -73,7 +71,6 @@ class TestAccountService(TestCase):
     ######################################################################
     #  A C C O U N T   T E S T   C A S E S
     ######################################################################
-
     def test_index(self):
         """It should get 200_OK from the Home Page"""
         response = self.client.get("/")
@@ -132,6 +129,7 @@ class TestAccountService(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(data["name"], account.name)
+
     def test_get_account_not_found(self):
         """It should return 404 if account not found"""
         resp = self.client.get(f"{BASE_URL}/0")
@@ -157,15 +155,8 @@ class TestAccountService(TestCase):
 
     def test_internal_server_error(self):
         """It should return a 500 Internal Server Error"""
-        # Disable TESTING to allow error handler to catch 500
-        app.config["TESTING"] = False
-        try:
-            resp = self.client.get("/boom")
-            self.assertEqual(resp.status_code, 500)
-            self.assertIn("Internal Server Error", resp.get_data(as_text=True))
-        finally:
-        # Re-enable testing for other tests
-            app.config["TESTING"] = True
+        resp = self.client.get("/boom")
+        self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def test_update_account(self):
         """It should Update an existing Account"""
@@ -185,6 +176,7 @@ class TestAccountService(TestCase):
         # Verify the change
         updated_account = resp.get_json()
         self.assertEqual(updated_account["name"], "Updated Name")
+
     def test_delete_account(self):
         """It should Delete an Account"""
         account = self._create_accounts(1)[0]
