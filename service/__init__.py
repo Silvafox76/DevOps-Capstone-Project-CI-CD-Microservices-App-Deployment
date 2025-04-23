@@ -5,13 +5,15 @@ This module creates and configures the Flask app using the factory pattern.
 """
 
 import sys
+
 from flask import Flask
-from flask_talisman import Talisman
 from flask_cors import CORS  # ✅ Import CORS
+from flask_talisman import Talisman
+
 from service import config
-from service.models import init_db
 from service.common import log_handlers
 from service.common.error_handlers import init_error_handlers
+from service.models import init_db
 
 # Global Talisman instance so it can be imported in tests
 talisman = Talisman()
@@ -29,7 +31,7 @@ def create_app():
     talisman.init_app(app)
 
     # Enable CORS
-    CORS(app)  # ✅ Now this is safe because `app` is defined
+    CORS(app)
 
     # Register error handlers
     init_error_handlers(app)
@@ -43,15 +45,19 @@ def create_app():
 
     # Register routes
     from service.routes import api
+
     app.register_blueprint(api)
 
     # Register CLI commands
     from service.common.cli_commands import register_commands
+
     register_commands(app)
 
     # Logging banner
     app.logger.info(70 * "*")
-    app.logger.info("  A C C O U N T   S E R V I C E   R U N N I N G  ".center(70, "*"))
+    app.logger.info(
+        "  A C C O U N T   S E R V I C E   R U N N I N G  ".center(70, "*")
+    )
     app.logger.info(70 * "*")
     app.logger.info("Service initialized!")
 

@@ -1,17 +1,20 @@
 """
 Test cases for Account Model
 """
+
 import logging
-import unittest
 import os
+import unittest
+
 from service import create_app
-app = create_app()
 from service.models import Account, DataValidationError, db
 from tests.factories import AccountFactory
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
 )
+
+app = create_app()
 
 
 ######################################################################
@@ -153,7 +156,11 @@ class TestAccount(unittest.TestCase):
 
     def test_update_account_without_id(self):
         """It should raise DataValidationError if updating without ID"""
-        account = Account(name="No ID", email="noid@example.com", address="Nowhere")
+        account = Account(
+            name="No ID",
+            email="noid@example.com",
+            address="Nowhere"
+        )
         account.id = None
         with self.assertRaises(DataValidationError):
             account.update()

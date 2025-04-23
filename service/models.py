@@ -5,6 +5,7 @@ All of the models are stored in this module
 """
 import logging
 from datetime import date
+
 from flask_sqlalchemy import SQLAlchemy
 
 logger = logging.getLogger("flask.app")
@@ -100,7 +101,7 @@ class Account(db.Model, PersistentBase):
             "email": self.email,
             "address": self.address,
             "phone_number": self.phone_number,
-            "date_joined": self.date_joined.isoformat()
+            "date_joined": self.date_joined.isoformat(),
         }
 
     def deserialize(self, data):
@@ -118,9 +119,13 @@ class Account(db.Model, PersistentBase):
             else:
                 self.date_joined = date.today()
         except KeyError as error:
-            raise DataValidationError(f"Invalid Account: missing {error.args[0]}") from error
+            raise DataValidationError(
+                f"Invalid Account: missing {error.args[0]}"
+            ) from error
         except TypeError as error:
-            raise DataValidationError("Invalid Account: body of request contained bad or no data") from error
+            raise DataValidationError(
+                "Invalid Account: body of request contained bad or no data"
+            ) from error
         return self
 
     @classmethod
@@ -128,5 +133,6 @@ class Account(db.Model, PersistentBase):
         """Returns all Accounts with the given name"""
         logger.info("Searching for name: %s", name)
         return cls.query.filter(cls.name == name)
+
 
 # temp

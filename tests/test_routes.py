@@ -6,12 +6,13 @@ Run with:
   coverage report -m
 """
 
-import os
 import logging
+import os
 from unittest import TestCase
+
 from service import create_app, talisman
 from service.common import status
-from service.models import db, Account
+from service.models import Account, db
 from tests.factories import AccountFactory
 
 DATABASE_URI = os.getenv(
@@ -103,16 +104,21 @@ class TestAccountService(TestCase):
     def test_internal_server_error(self):
         """It should return a 500 Internal Server Error"""
         self.app.config["PROPAGATE_EXCEPTIONS"] = False
-        response = self.client.get("/boom", environ_overrides={"wsgi.url_scheme": "https"})
+        response = self.client.get(
+            "/boom", environ_overrides={"wsgi.url_scheme": "https"}
+        )
         self.assertEqual(response.status_code, 500)
         data = response.get_json()
         self.assertEqual(data["error"], "Internal Server Error")
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
     def test_cors_security(self):
         """It should return a CORS header"""
-        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        response = self.client.get("/", environ_overrides=HTTPS_ENVIRON)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check for the CORS header
-        self.assertEqual(response.headers.get('Access-Control-Allow-Origin'), '*')
-
+        self.assertEqual(
+            response.headers.get("Access-Control-Allow-Origin"), "*"
+        )

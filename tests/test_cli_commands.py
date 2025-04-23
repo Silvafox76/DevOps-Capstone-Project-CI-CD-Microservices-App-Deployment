@@ -2,7 +2,9 @@
 Tests for CLI Commands
 """
 from unittest import TestCase
+
 from service import create_app
+
 
 class TestCLICommands(TestCase):
     """Tests for CLI Commands"""

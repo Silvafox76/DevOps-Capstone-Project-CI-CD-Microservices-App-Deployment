@@ -2,7 +2,8 @@
 Routes for the Account Service
 """
 
-from flask import Blueprint, jsonify, request, abort
+from flask import Blueprint, abort, jsonify, request
+
 from service.common import status
 from service.models import Account
 
@@ -18,7 +19,10 @@ api = Blueprint("api", __name__)
 @api.route("/", methods=["GET"])
 def index():
     """Returns a simple greeting message for the root URL"""
-    return jsonify(name="Account REST API Service", version="1.0"), status.HTTP_200_OK
+    return (
+        jsonify(name="Account REST API Service", version="1.0"),
+        status.HTTP_200_OK,
+    )
 
 
 ######################################################################

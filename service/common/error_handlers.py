@@ -2,9 +2,9 @@
 Error Handlers for the Account Service
 """
 
-from flask import jsonify, current_app
-from service.models import DataValidationError
+from flask import current_app, jsonify
 from service.common import status
+from service.models import DataValidationError
 
 
 def init_error_handlers(app):
@@ -58,7 +58,9 @@ def init_error_handlers(app):
     @app.errorhandler(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     def mediatype_not_supported(error):
         """Handle 415 Unsupported Media Type"""
-        current_app.logger.warning(f"415 Unsupported Media Type: {str(error)}")
+        current_app.logger.warning(
+            f"415 Unsupported Media Type: {str(error)}"
+        )
         return (
             jsonify(
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
@@ -76,7 +78,10 @@ def init_error_handlers(app):
             jsonify(
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 error="Internal Server Error",
-                message="An unexpected error occurred. Please try again later.",
+                message=(
+                    "An unexpected error occurred. "
+                    "Please try again later."
+                ),
             ),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )

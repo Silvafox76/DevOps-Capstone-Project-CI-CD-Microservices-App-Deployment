@@ -4,6 +4,7 @@ Test cases for log handlers
 
 import unittest
 from unittest.mock import MagicMock
+
 from service.common.log_handlers import init_logging
 
 
@@ -21,7 +22,9 @@ class TestLogHandlers(unittest.TestCase):
         mock_logger.level = 20  # INFO
 
         # Patch the logger inside the function
-        with unittest.mock.patch("logging.getLogger", return_value=mock_logger):
+        with unittest.mock.patch(
+            "logging.getLogger", return_value=mock_logger
+        ):
             init_logging(mock_app, "test.logger")
 
         # Assertions
