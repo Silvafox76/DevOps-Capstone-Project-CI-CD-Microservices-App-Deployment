@@ -12,6 +12,7 @@ DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
 )
 
+
 ######################################################################
 #  Account   M O D E L   T E S T   C A S E S
 ######################################################################
@@ -33,16 +34,12 @@ class TestAccount(unittest.TestCase):
 
     def setUp(self):
         """This runs before each test"""
-        db.session.query(Account).delete()  # clean up the last tests
+        db.session.query(Account).delete()
         db.session.commit()
 
     def tearDown(self):
         """This runs after each test"""
         db.session.remove()
-
-    ######################################################################
-    #  T E S T   C A S E S
-    ######################################################################
 
     def test_create_an_account(self):
         """It should Create an Account and assert that it exists"""

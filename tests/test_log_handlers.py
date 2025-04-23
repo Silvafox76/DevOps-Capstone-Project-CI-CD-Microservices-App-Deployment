@@ -1,8 +1,15 @@
+"""
+Test cases for log handlers
+"""
+
 import unittest
 from unittest.mock import MagicMock
 from service.common.log_handlers import init_logging
 
+
 class TestLogHandlers(unittest.TestCase):
+    """Test the logging setup function"""
+
     def test_init_logging(self):
         """It should initialize logging with formatter"""
         mock_app = MagicMock()

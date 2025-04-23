@@ -39,6 +39,7 @@ app.logger.info("Service initialized!")
 import unittest
 from service import app
 
+
 class TestInit(unittest.TestCase):
     """Test loading of the Flask app"""
 
