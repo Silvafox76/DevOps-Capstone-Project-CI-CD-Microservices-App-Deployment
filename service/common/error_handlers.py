@@ -70,16 +70,12 @@ def mediatype_not_supported(error):
     )
 
 
-@app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
+@app.errorhandler(500)
 def internal_server_error(error):
-    """Handles unexpected server error with 500_SERVER_ERROR"""
+    """Handles unexpected server errors"""
     message = str(error)
-    app.logger.error(message)
+    app.logger.error("Internal Server Error: %s", message)
     return (
-        jsonify(
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            error="Internal Server Error",
-            message=message,
-        ),
-        status.HTTP_500_INTERNAL_SERVER_ERROR,
+        jsonify(status=500, error="Internal Server Error", message=message),
+        500,
     )

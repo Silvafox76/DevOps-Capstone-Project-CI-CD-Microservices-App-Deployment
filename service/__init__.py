@@ -35,3 +35,14 @@ except Exception as error:  # pylint: disable=broad-except
     sys.exit(4)
 
 app.logger.info("Service initialized!")
+
+import unittest
+from service import app
+
+class TestInit(unittest.TestCase):
+    """Test loading of the Flask app"""
+
+    def test_app_instance(self):
+        """It should load the Flask app and run init logic"""
+        self.assertIsNotNone(app)
+        self.assertTrue(app.name.startswith("service"))

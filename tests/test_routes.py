@@ -123,4 +123,70 @@ class TestAccountService(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    # ADD YOUR TEST CASES HERE ...
+    def test_get_account(self):
+        """It should Read a single Account"""
+        account = self._create_accounts(1)[0]
+        resp = self.client.get(
+            f"{BASE_URL}/{account.id}", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], account.name)
+    def test_get_account_not_found(self):
+        """It should return 404 if account not found"""
+        resp = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_create_account_returns_location(self):
+        """It should return a location header on account creation"""
+        account_data = {
+            "name": "Jane Doe",
+            "email": "jane@example.com",
+            "address": "456 Elm St",
+            "phone_number": "555-5678",
+            "date_joined": "2024-01-01"
+        }
+        resp = self.client.post(BASE_URL, json=account_data)
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        self.assertIn("Location", resp.headers)
+
+    def test_method_not_allowed(self):
+        """It should return 405 for unsupported methods"""
+        resp = self.client.put(BASE_URL)  # PUT not supported on /accounts
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_internal_server_error(self):
+        """It should return a 500 Internal Server Error"""
+        # Disable TESTING to allow error handler to catch 500
+        app.config["TESTING"] = False
+        try:
+            resp = self.client.get("/boom")
+            self.assertEqual(resp.status_code, 500)
+            self.assertIn("Internal Server Error", resp.get_data(as_text=True))
+        finally:
+        # Re-enable testing for other tests
+            app.config["TESTING"] = True
+
+    def test_update_account(self):
+        """It should Update an existing Account"""
+        # Create an Account first
+        test_account = AccountFactory()
+        resp = self.client.post(BASE_URL, json=test_account.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # Modify the created account
+        new_account = resp.get_json()
+        new_account["name"] = "Updated Name"
+
+        # Send update request
+        resp = self.client.put(f"{BASE_URL}/{new_account['id']}", json=new_account)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        # Verify the change
+        updated_account = resp.get_json()
+        self.assertEqual(updated_account["name"], "Updated Name")
+    def test_delete_account(self):
+        """It should Delete an Account"""
+        account = self._create_accounts(1)[0]
+        resp = self.client.delete(f"{BASE_URL}/{account.id}")
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
