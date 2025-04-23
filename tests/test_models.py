@@ -4,7 +4,8 @@ Test cases for Account Model
 import logging
 import unittest
 import os
-from service import app
+from service import create_app
+app = create_app()
 from service.models import Account, DataValidationError, db
 from tests.factories import AccountFactory
 
