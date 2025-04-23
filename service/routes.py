@@ -9,9 +9,11 @@ from service.models import Account
 # Create the Blueprint for routes
 api = Blueprint("api", __name__)
 
+
 ######################################################################
 # INDEX
 ######################################################################
+
 
 @api.route("/", methods=["GET"])
 def index():
@@ -23,6 +25,7 @@ def index():
 # HEALTH CHECK
 ######################################################################
 
+
 @api.route("/health", methods=["GET"])
 def health():
     """Health check endpoint"""
@@ -33,15 +36,17 @@ def health():
 # INTERNAL SERVER ERROR (FOR TESTING)
 ######################################################################
 
+
 @api.route("/boom", methods=["GET"])
 def boom():
     """Endpoint to deliberately trigger a 500 Internal Server Error"""
-    raise Exception("Boom!")  
+    raise Exception("Boom!")
 
 
 ######################################################################
 # CREATE AN ACCOUNT
 ######################################################################
+
 
 @api.route("/accounts", methods=["POST"])
 def create_account():
