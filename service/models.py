@@ -26,31 +26,27 @@ def init_db(app):
 #  P E R S I S T E N T   B A S E   M O D E L
 ######################################################################
 class PersistentBase:
-    """Base class added persistent methods"""
+    """Base class adds persistent methods"""
 
     def __init__(self):
-        self.id = None  # pylint: disable=invalid-name
+        self.id = None
 
     def create(self):
-        """
-        Creates an Account to the database
-        """
+        """Creates an Account in the database"""
         logger.info("Creating %s", self.name)
-        self.id = None  # id must be none to generate next primary key
+        self.id = None
         db.session.add(self)
         db.session.commit()
 
     def update(self):
-        """
-        Updates an Account to the database
-        """
+        """Updates an Account in the database"""
         if not self.id:
             raise DataValidationError("Update called with empty ID field")
         logger.info("Updating %s", self.name)
         db.session.commit()
 
     def delete(self):
-        """Removes an Account from the data store"""
+        """Deletes an Account from the database"""
         logger.info("Deleting %s", self.name)
         db.session.delete(self)
         db.session.commit()
@@ -66,14 +62,14 @@ class PersistentBase:
 
     @classmethod
     def all(cls):
-        """Returns all of the records in the database"""
-        logger.info("Processing all records")
+        """Returns all records in the database"""
+        logger.info("Fetching all records")
         return cls.query.all()
 
     @classmethod
     def find(cls, by_id):
-        """Finds a record by its ID"""
-        logger.info("Processing lookup for id %s ...", by_id)
+        """Finds a record by ID"""
+        logger.info("Looking up id %s ...", by_id)
         return cls.query.get(by_id)
 
 
@@ -81,9 +77,7 @@ class PersistentBase:
 #  A C C O U N T   M O D E L
 ######################################################################
 class Account(db.Model, PersistentBase):
-    """
-    Class that represents an Account
-    """
+    """Represents an Account in the system"""
 
     app = None
 
@@ -110,10 +104,10 @@ class Account(db.Model, PersistentBase):
         }
 
     def deserialize(self, data):
-        """
-        Deserializes an Account from a dictionary
-        """
+        """Deserializes an Account from a dictionary"""
         try:
+            if not isinstance(data, dict):
+                raise TypeError("data is not a dictionary")
             self.name = data["name"]
             self.email = data["email"]
             self.address = data["address"]
@@ -124,15 +118,21 @@ class Account(db.Model, PersistentBase):
             else:
                 self.date_joined = date.today()
         except KeyError as error:
-            raise DataValidationError("Invalid Account: missing " + error.args[0]) from error
+            raise DataValidationError(f"Invalid Account: missing {error.args[0]}") from error
         except TypeError as error:
-            raise DataValidationError(
-                "Invalid Account: body of request contained bad or no data - " + error.args[0]
-            ) from error
+            raise DataValidationError("Invalid Account: body of request contained bad or no data") from error
         return self
 
     @classmethod
     def find_by_name(cls, name):
         """Returns all Accounts with the given name"""
-        logger.info("Processing name query for %s ...", name)
+        logger.info("Searching for name: %s", name)
         return cls.query.filter(cls.name == name)
+
+
+    def test_deserialize_key_error(self):
+        """It should raise KeyError if fields are missing"""
+        account = Account()
+        bad_data = {"email": "test@example.com"}  # missing name
+        with self.assertRaises(KeyError):
+            account.deserialize(bad_data)
