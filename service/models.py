@@ -128,3 +128,4 @@ class Account(db.Model, PersistentBase):
         """Returns all Accounts with the given name"""
         logger.info("Searching for name: %s", name)
         return cls.query.filter(cls.name == name)
+
