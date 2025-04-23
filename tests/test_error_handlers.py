@@ -14,7 +14,7 @@ class TestErrorHandlers(TestCase):
     def test_bad_request_handler(self):
         with self.app.test_request_context():
             response = self.app.handle_user_exception(DataValidationError("Invalid data"))
-            self.assertEqual(response[1], HTTP_400_BAD_REQUEST)
+            self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
 
     def test_not_found_handler(self):
         """It should return 404 Not Found"""
