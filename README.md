@@ -38,3 +38,8 @@ This repository showcases a full-stack DevOps capstone project completed as part
 ├── tests/ # Unit & Integration tests
 ├── Dockerfile # App container definition
 └── README.md # You're here!
+
+
+🙋‍♂️ Author
+Ryan Dear
+GitHub | LinkedIn | Email
